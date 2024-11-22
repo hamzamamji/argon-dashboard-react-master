@@ -5,6 +5,7 @@ import WhatsApp from "views/examples/Whatsapp.js";
 import Dashboard from "views/Dashboard.js";
 import Campaign from "views/examples/Campaign.js";
 import Templates from "views/examples/Templates.js";
+import CreateWhatsappModal from "components/Pages/CreateWhatsappModal";
 
 
 var routes = [
@@ -52,10 +53,10 @@ var routes = [
     layout: "/auth",
   },
   {
-    path: "/",
-    name: "Register",
+    path: "/create-whatsapp",
+    name: "Createwhatsapp",
     icon: "ni ni-circle-08 text-gray",
-    component: <Register />,
+    component: <CreateWhatsappModal />,
     layout: "/auth",
   },
 ];

@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { Modal, Card, CardHeader, CardBody, Form, FormGroup, InputGroup, InputGroupAddon, InputGroupText, Input, Button } from "reactstrap";
 import axios from "axios";
+import { COMPANY_API_ENDPOINT } from "Api/Constant";
 
 const CreateWhatsappModal = ({ isOpen, toggleModal }) => {
   const [formData, setFormData] = useState({
     name: "",
     phoneNumber: "",
-    country: "",
     status: "",
     description: ""
   });
@@ -22,14 +22,28 @@ const CreateWhatsappModal = ({ isOpen, toggleModal }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      // Send the POST request to the backend
-      const response = await axios.post("/company/create", formData);
+    // Get token from localStorage
+    const token = localStorage.getItem('token');
 
-      if (response.data.success) {
+    // Ensure the data is valid before submitting
+    if (!formData.name || !formData.phoneNumber || !formData.status) {
+      alert("Name, Phone Number, and Status are required.");
+      return;
+    }
+
+    try {
+      const res = await axios.post(`${COMPANY_API_ENDPOINT}/create`, formData, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      });
+
+      if (res.data.success) {
         alert("WhatsApp account created successfully!");
         toggleModal(); // Close the modal after success
-        setFormData({ name: "", phoneNumber: "", country: "", status: "", description: "" }); // Reset form
+        setFormData({ name: "", phoneNumber: "", status: "", description: "" }); // Reset form
       } else {
         alert("Failed to create WhatsApp account.");
       }
@@ -99,15 +113,15 @@ const CreateWhatsappModal = ({ isOpen, toggleModal }) => {
                 </InputGroup>
                 <div className="mt-2">
                   <select
-                    name="country"
-                    value={formData.country}
-                    onChange={handleInputChange}
                     style={{
                       width: "100%",
                       padding: "8px",
                       borderRadius: "5px",
                       border: "1px solid #ccc",
                     }}
+                    name="country"
+                    value={formData.country}
+                    onChange={handleInputChange}
                   >
                     <option value="" disabled selected>
                       Choose Country
